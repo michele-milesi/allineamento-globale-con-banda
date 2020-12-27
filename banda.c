@@ -12,7 +12,7 @@ int main(){
 	char* alignment1;	//allineamneto di s1 con s2
 	char* alignment2;	//allineamneto di s2 con s1
 	int l1, l2;	//lunghezze delle stringhe in input
-	int k, band_width;
+	int base, extra = 1, k, band_width;
 	int i, j, index;	
 	int best_alignment_score = 0, upper_bound, score;
 	int first_time = 1;
@@ -29,13 +29,9 @@ int main(){
 	s2 = (char*) malloc(sizeof(char) * (l2 + 1));
 	fscanf(input_file, "%s", s2);
 	
-	
-	//calcolo parametri k, band_width
-	if (l1 == l2) 	//se l1 e l2 sono uguali si forza la larghezza della banda a 3
-		k = 1;
-	else
-		k = abs(l1 - l2);
-	band_width = 2 * k + 1;
+	//calcolo parametri per la larghezza della banda
+	base = abs(l1 - l2);
+	band_width = base + 2 * extra;
 	
 	//calcolo valore allineamento nel caso in cui s1 e s2 coincidano
 	for(i=0; i<l1; i++)
@@ -57,6 +53,7 @@ int main(){
 		first_time = 0;
 		
 		//calcolo allineamento
+		k = band_width / 2;	
 		M[0][k] = 0;
 		P[0][k] = -1;
 		for(i = 0; i <= l1; i++) {
@@ -94,17 +91,16 @@ int main(){
 			}
 		}
 		score = M[l1][l2 - l1 + k];	//valore calcolato dell'allineamento
-		upper_bound = best_alignment_score -(4 * (k + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
-		k *= 2;	//si raddoppia la banda	
-		band_width = 2 * k + 1;
+		upper_bound = best_alignment_score -(4 * (band_width + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
+		extra *= 2;	
+		band_width = base + 2 * extra;
 		
 	//si continua a raddoppiare la banda fino a quando o la grandezza della matrice è maggiore o uguale a 
 	//quella dell'allineamento globale "classico"
 	//oppure quando ci si accorge che raddoppiare la banda non può più portare ad un miglioramento del valore trovato
-	}while(score <= upper_bound && k/2 <= (l1>l2?l1:l2));
+	}while(score <= upper_bound && k <= (l1>l2?l1:l2));
 	
 	//ricostruzione di un allineamento ottimo
-	k /= 2;	//si riporta k al valore che aveva quando è stato trovato l'ottimo
 	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));	//l'allineamento non può essere più lungo di |s1| + |s2|
 	alignment2 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	i = l1;	
@@ -120,7 +116,6 @@ int main(){
 		}
 		//up-left
 		else if(P[i][j] == 0){
-			printf("%c %c", s1[i - 1], s2[j + i - k - 1]);
 			alignment1[index] = s1[i-1];
 			alignment2[index] = s2[j + i - k - 1];			
 			i--;
