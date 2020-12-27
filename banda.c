@@ -149,7 +149,7 @@ int main(){
 	fclose(output_file);
 	fclose(input_file);
 	
-	//liberazione spazio nello heap
+	//libera spazio nello heap
 	for(i = 0; i <= l1; i++) {
 		free((void*) M[i]);
 		free((void*) P[i]);
