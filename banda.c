@@ -91,7 +91,7 @@ int main(){
 			}
 		}
 		score = M[l1][l2 - l1 + k];	//valore calcolato dell'allineamento
-		upper_bound = best_alignment_score -(4 * (band_width + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
+		upper_bound = best_alignment_score -(4 * (k + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
 		extra *= 2;	
 		band_width = base + 2 * extra;
 		
