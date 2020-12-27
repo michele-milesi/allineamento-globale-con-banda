@@ -30,6 +30,6 @@ int index_of(char c) {
 	if(c == '*') 
 		return 23;
 	for(i=0; i<23; i++)
-        if(c == chars[i])
-            return i;
+		if(c == chars[i])
+			return i;
 }
