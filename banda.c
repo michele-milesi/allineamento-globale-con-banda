@@ -105,7 +105,7 @@ int main(){
 	
 	//ricostruzione di un allineamento ottimo
 	k /= 2;	//si riporta k al valore che aveva quando è stato trovato l'ottimo
-	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));	//l'allineamento non può valere più di |s1| + |s2|
+	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));	//l'allineamento non può essere più lungo di |s1| + |s2|
 	alignment2 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	i = l1;	
 	j = l2 - l1 + k;	//j parte dall'elemento della matrice P che corrisponde all'ultimo carattere di s2
