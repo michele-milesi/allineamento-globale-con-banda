@@ -1,20 +1,21 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "blosum62.h"
 
 int main(){
 	//dichiarazione variabili
-	int** M;	//matrice di programmazione dinamica
+	int64_t** M;	//matrice di programmazione dinamica
 	short** P;	//matrice dei predecessori, per ricostruire l'allineamento
 				//0 -> up-left, 1 -> left, 2 -> up
-	char* s1;	//stringa in input	
-	char* s2;	//stringa in input
+	char* s1, *s2;	//stringa in input	
 	char* alignment1;	//allineamneto di s1 con s2
 	char* alignment2;	//allineamneto di s2 con s1
 	int l1, l2;	//lunghezze delle stringhe in input
-	int base, extra = 1, k, band_width;
+	int base, extra = 1, band_width;
+	int k;
 	int i, j, index;	
-	int best_alignment_score = 0, upper_bound, score;
+	int64_t best_alignment_score = 0, upper_bound, score;
 	int first_time = 1;
 	
 	FILE* input_file = fopen("input.txt", "r");
@@ -30,15 +31,25 @@ int main(){
 	fscanf(input_file, "%s", s2);
 	
 	//calcolo parametri per la larghezza della banda
-	base = abs(l1 - l2);
+	base = abs(l1 - l2) + 1;
 	band_width = base + 2 * extra;
+	
+	//scambio s1 e s2 nel caso in cui |s1| > |s1|
+	if(l1 > l2) {
+		char* tmp = s1;
+		s1 = s2;
+		s2 = tmp;
+		int t = l1;
+		l1 = l2;
+		l2 = t;
+	}
 	
 	//calcolo valore allineamento nel caso in cui s1 e s2 coincidano
 	for(i=0; i<l1; i++)
 		best_alignment_score += d[index_of(s1[i])][index_of(s1[i])];
 		
 	
-	M = (int**) malloc(sizeof(int*) * (l1 + 1));
+	M = (int64_t**) malloc(sizeof(int64_t*) * (l1 + 1));
 	P = (short**) malloc(sizeof(short*) * (l1 + 1));
 	
 	do{
@@ -47,13 +58,13 @@ int main(){
 				free((void*) M[i]);
 				free((void*) P[i]);
 			}
-			M[i] = (int*) malloc(sizeof(int) * band_width);
+			M[i] = (int64_t*) malloc(sizeof(int64_t) * band_width);
 			P[i] = (short*) malloc(sizeof(short) * band_width);
 		}
 		first_time = 0;
 		
 		//calcolo allineamento
-		k = band_width / 2;	
+		k = extra;	
 		M[0][k] = 0;
 		P[0][k] = -1;
 		for(i = 0; i <= l1; i++) {
@@ -100,6 +111,7 @@ int main(){
 	//oppure quando ci si accorge che raddoppiare la banda non può più portare ad un miglioramento del valore trovato
 	}while(score <= upper_bound && k <= (l1>l2?l1:l2));
 	
+	
 	//ricostruzione di un allineamento ottimo
 	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));	//l'allineamento non può essere più lungo di |s1| + |s2|
 	alignment2 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
@@ -130,15 +142,15 @@ int main(){
 	}
 	alignment1[index] = '\0';
 	alignment2[index] = '\0';
-	alignment1 = (char*) strrev(alignment1);
-	alignment2 = (char*) strrev(alignment2);
+/*	alignment1 = (char*) strrev(alignment1);
+	alignment2 = (char*) strrev(alignment2);*/
 	
 	//scrittura risultati su file
 	output_file = fopen("result.txt", "w");
 	fprintf(output_file, "Alignment Score: %d\n\n", score);
 	fprintf(output_file, "Alignment:\n");
-	fprintf(output_file, "%s\n", alignment1);
-	fprintf(output_file, "%s", alignment2);
+	fprintf(output_file, "%s\n", strrev(alignment1));
+	fprintf(output_file, "%s", strrev(alignment2));
 	
 	//chiusura file input e output
 	fclose(output_file);
