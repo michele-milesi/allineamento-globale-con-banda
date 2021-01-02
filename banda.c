@@ -55,8 +55,8 @@ int main(){
 	do{
 		for(i = 0; i <= l1; i++) {
 			if (first_time != 1) {
-				free((void*) M[i]);
-				free((void*) P[i]);
+				free(M[i]);
+				free(P[i]);
 			}
 			M[i] = (int64_t*) malloc(sizeof(int64_t) * band_width);
 			P[i] = (short*) malloc(sizeof(short) * band_width);
@@ -158,15 +158,15 @@ int main(){
 	
 	//libera spazio nello heap
 	for(i = 0; i <= l1; i++) {
-		free((void*) M[i]);
-		free((void*) P[i]);
+		free(M[i]);
+		free(P[i]);
 	}
-	free((void*) M);
-	free((void*) P);
-	free((void*) s1);
-	free((void*) s2);
-	free((void*) alignment1);
-	free((void*) alignment2);
+	free(M);
+	free(P);
+	free(s1);
+	free(s2);
+	free(alignment1);
+	free(alignment2);
 	
 	return 0;
 }
