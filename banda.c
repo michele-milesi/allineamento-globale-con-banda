@@ -75,8 +75,8 @@ int main(int argc, char **argv){
 						//prima di allocare spazio, bisogna rilasciare quello già occupato
 		
 		//calcolo allineamento
-		k = extra;		//la prima cella della matrice di programmazione dinamica è in posizione [0, extra]
-		M[0][k] = 0;	//imposto caso base: la cella M[0,extra] della matrice coincide con
+		k = extra;	//la prima cella da considerare della matrice di programmazione dinamica è in posizione [0, extra]
+		M[0][k] = 0;	//imposto caso base: la cella M[0, extra] della matrice coincide con
 						//la cella in posizione [0, 0] della matrice di programmazione dinamica nell'algoritmo
 						//di Smith-Waterman
 						
@@ -109,7 +109,7 @@ int main(int argc, char **argv){
 						M[i][j] = M[i][j-1] + d[index_of('*')][index_of(s2[s2_index])];	
 						P[i][j] = 1;
 					}
-					//up
+					//up -> j non deve sforare i bordi della matrice
 					if(j < band_width - 1 && M[i][j] < M[i-1][j+1] + d[index_of(s1[s1_index])][index_of('*')]) {
 						M[i][j] = M[i-1][j+1] + d[index_of(s1[s1_index])][index_of('*')];
 						P[i][j] = 2;
@@ -118,19 +118,19 @@ int main(int argc, char **argv){
 			}
 		}
 		score = M[l1][l2 - l1 + k];	//valore calcolato dell'allineamento
-		upper_bound = best_alignment_score - (4 * (k + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
+		upper_bound = best_alignment_score - (4 * (k + 1));	
 		extra *= 2;	
 		band_width = base + 2 * extra;
 		
-	//si continua a raddoppiare la banda fino a quando o la grandezza della matrice è maggiore o uguale a 
-	//quella dell'allineamento globale "classico"
+	//si continua a raddoppiare la banda fino a quando o la grandezza della matrice è maggiore a 
+	//quella dell'algoritmo dell'allineamento globale "classico" (Smith-Waterman)
 	//oppure quando ci si accorge che raddoppiare la banda non può più portare ad un miglioramento del valore trovato
 	}while(score <= upper_bound && k <= l2);
 	
 	
 	//ricostruzione di un allineamento ottimo
 	//l'allineamento non può essere più lungo di |s1| + |s2|
-	//+ 1 per carattere di fine stringa '/0'
+	//+ 1 per contenere il carattere di fine stringa '/0'
 	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	alignment2 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	i = l1;	
@@ -140,13 +140,13 @@ int main(int argc, char **argv){
 	{
 		//up
 		if(P[i][j] == 2){
-			alignment1[index] = s1[i-1];
+			alignment1[index] = s1[i - 1];
 			alignment2[index] = '-';
 			i--, j++;
 		}
 		//up-left
 		else if(P[i][j] == 0){
-			alignment1[index] = s1[i-1];
+			alignment1[index] = s1[i - 1];
 			alignment2[index] = s2[j + i - k - 1];			
 			i--;
 		}
