@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include "blosum62.h"
 
-int main(){
+int main(int argc, char **argv){
 	//dichiarazione variabili
 	int64_t** M;	//matrice di programmazione dinamica
 	short** P;	//matrice dei predecessori, per ricostruire l'allineamento
