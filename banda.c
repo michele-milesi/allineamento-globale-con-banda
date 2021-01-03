@@ -10,10 +10,10 @@
 int main(int argc, char **argv){
 	//dichiarazione variabili
 	int64_t** M;	//matrice di programmazione dinamica
-	short** P;		//matrice dei predecessori, per ricostruire l'allineamento
-					//0 -> up-left
-					//1 -> left
-					// 2 -> up
+	short** P;	//matrice dei predecessori, per ricostruire l'allineamento
+				//0 -> up-left
+				//1 -> left
+				// 2 -> up
 				
 	char* s1, *s2;	//stringhe in input	
 	char* alignment1;	//allineamneto di s1 con s2
