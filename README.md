@@ -1,5 +1,5 @@
-# Progetto Elementi di Bioinformatica 
-## Allineamento Golobale con Banda
+# Allineamento Golobale con Banda
+## Progetto Elementi di Bioinformatica - UniMiB
 
 ### Input
 L'input del programma viene letto dal file "input.txt". <br />
