@@ -1,3 +1,7 @@
+/*
+	
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -7,16 +11,21 @@ int main(){
 	//dichiarazione variabili
 	int64_t** M;	//matrice di programmazione dinamica
 	short** P;	//matrice dei predecessori, per ricostruire l'allineamento
-				//0 -> up-left, 1 -> left, 2 -> up
-	char* s1, *s2;	//stringa in input	
+				//0 -> up-left
+				//1 -> left
+				// 2 -> up
+				
+	char* s1, *s2;	//stringhe in input	
 	char* alignment1;	//allineamneto di s1 con s2
 	char* alignment2;	//allineamneto di s2 con s1
 	int l1, l2;	//lunghezze delle stringhe in input
 	int base, extra = 1, band_width;
-	int k;
+	int k;	
 	int i, j, index;	
 	int64_t best_alignment_score = 0, upper_bound, score;
-	int first_time = 1;
+	short first_time = 1;	//variabile che serve per capire se bisogna rilasciare 
+							//occupato dalla matrice di programmazione dinamica
+							//prima di allocare nuovo spazio per una nuova iterazione
 	
 	FILE* input_file = fopen("input.txt", "r");
 	FILE* output_file;
@@ -48,11 +57,12 @@ int main(){
 	for(i=0; i<l1; i++)
 		best_alignment_score += d[index_of(s1[i])][index_of(s1[i])];
 		
-	
+		
 	M = (int64_t**) malloc(sizeof(int64_t*) * (l1 + 1));
 	P = (short**) malloc(sizeof(short*) * (l1 + 1));
 	
 	do{
+		//allocazione spazio necessario
 		for(i = 0; i <= l1; i++) {
 			if (first_time != 1) {
 				free(M[i]);
@@ -61,12 +71,18 @@ int main(){
 			M[i] = (int64_t*) malloc(sizeof(int64_t) * band_width);
 			P[i] = (short*) malloc(sizeof(short) * band_width);
 		}
-		first_time = 0;
+		first_time = 0;	//imposto che d'ora in poi, se è necessario raddopiare la banda
+						//prima di allocare spazio, bisogna rilasciare quello già occupato
 		
 		//calcolo allineamento
-		k = extra;	
-		M[0][k] = 0;
-		P[0][k] = -1;
+		k = extra;		//la prima cella della matrice di programmazione dinamica è in posizione (0, extra)
+		M[0][k] = 0;	//imposto caso base: la cella M[0,extra] della matrice coincide con
+						//la cella in posizione (0,0) della matrice di programmazione dinamica nell'algoritmo
+						//di Smith-Waterman
+						
+		P[0][k] = -1;	//mi segno dove mi devo fermare nel ricostruire l'allineamento
+		
+		
 		for(i = 0; i <= l1; i++) {
 			for(j = 0; j < band_width; j++) {
 				int s1_index = i - 1;	//carattere di s2 che si sta analizzando
@@ -102,18 +118,20 @@ int main(){
 			}
 		}
 		score = M[l1][l2 - l1 + k];	//valore calcolato dell'allineamento
-		upper_bound = best_alignment_score -(4 * (k + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
+		upper_bound = best_alignment_score - (4 * (k + 1));	//upper_bound nel caso migliore (s1 = s2) e k + 1 indel
 		extra *= 2;	
 		band_width = base + 2 * extra;
 		
 	//si continua a raddoppiare la banda fino a quando o la grandezza della matrice è maggiore o uguale a 
 	//quella dell'allineamento globale "classico"
 	//oppure quando ci si accorge che raddoppiare la banda non può più portare ad un miglioramento del valore trovato
-	}while(score <= upper_bound && k <= (l1>l2?l1:l2));
+	}while(score <= upper_bound && k <= l2);
 	
 	
 	//ricostruzione di un allineamento ottimo
-	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));	//l'allineamento non può essere più lungo di |s1| + |s2|
+	//l'allineamento non può essere più lungo di |s1| + |s2|
+	//+ 1 per carattere di fine stringa '/0'
+	alignment1 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	alignment2 = (char*) malloc(sizeof(char) * (l1 + l2 + 1));
 	i = l1;	
 	j = l2 - l1 + k;	//j parte dall'elemento della matrice P che corrisponde all'ultimo carattere di s2
@@ -140,14 +158,13 @@ int main(){
 		}
 		index++;
 	}
+
 	alignment1[index] = '\0';
 	alignment2[index] = '\0';
-/*	alignment1 = (char*) strrev(alignment1);
-	alignment2 = (char*) strrev(alignment2);*/
 	
 	//scrittura risultati su file
 	output_file = fopen("result.txt", "w");
-	fprintf(output_file, "Alignment Score: %d\n\n", score);
+	fprintf(output_file, "Alignment Score: %ld\n\n", score);
 	fprintf(output_file, "Alignment:\n");
 	fprintf(output_file, "%s\n", strrev(alignment1));
 	fprintf(output_file, "%s", strrev(alignment2));
