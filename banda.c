@@ -10,10 +10,10 @@
 int main(int argc, char **argv){
 	//dichiarazione variabili
 	int64_t** M;	//matrice di programmazione dinamica
-	short** P;	//matrice dei predecessori, per ricostruire l'allineamento
-				//0 -> up-left
-				//1 -> left
-				// 2 -> up
+	short** P;		//matrice dei predecessori, per ricostruire l'allineamento
+					//0 -> up-left
+					//1 -> left
+					// 2 -> up
 				
 	char* s1, *s2;	//stringhe in input	
 	char* alignment1;	//allineamneto di s1 con s2
@@ -23,8 +23,8 @@ int main(int argc, char **argv){
 	int k;	
 	int i, j, index;	
 	int64_t best_alignment_score = 0, upper_bound, score;
-	short first_time = 1;	//variabile che serve per capire se bisogna rilasciare 
-							//occupato dalla matrice di programmazione dinamica
+	short first_time = 1;	//variabile che serve per capire se bisogna rilasciare memoria
+							//occupata dalla matrice di programmazione dinamica
 							//prima di allocare nuovo spazio per una nuova iterazione
 	
 	FILE* input_file = fopen("input.txt", "r");
@@ -75,9 +75,9 @@ int main(int argc, char **argv){
 						//prima di allocare spazio, bisogna rilasciare quello già occupato
 		
 		//calcolo allineamento
-		k = extra;		//la prima cella della matrice di programmazione dinamica è in posizione (0, extra)
+		k = extra;		//la prima cella della matrice di programmazione dinamica è in posizione [0, extra]
 		M[0][k] = 0;	//imposto caso base: la cella M[0,extra] della matrice coincide con
-						//la cella in posizione (0,0) della matrice di programmazione dinamica nell'algoritmo
+						//la cella in posizione [0, 0] della matrice di programmazione dinamica nell'algoritmo
 						//di Smith-Waterman
 						
 		P[0][k] = -1;	//mi segno dove mi devo fermare nel ricostruire l'allineamento
@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 		
 		for(i = 0; i <= l1; i++) {
 			for(j = 0; j < band_width; j++) {
-				int s1_index = i - 1;	//carattere di s2 che si sta analizzando
+				int s1_index = i - 1;	//carattere di s1 che si sta analizzando
 				int s2_index = j + i - k - 1;	//carattere di s2 che si sta analizzando
 					
 				//condizione al contorno (left)
