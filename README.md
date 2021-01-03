@@ -11,4 +11,4 @@ Il file di input deve contenere i seguenti elementi esatamente nell'ordine in cu
   
 ### Output
 L'output viene inserito nel file "result.txt". <br />
-Nel file viene inserito il valore di un allineamento ottimo trovato dall'algoritmo e un allineamneto ottimo delle due stringhe
+Nel file viene inserito il valore di un allineamento ottimo trovato dall'algoritmo e un allineamento ottimo delle due stringhe
