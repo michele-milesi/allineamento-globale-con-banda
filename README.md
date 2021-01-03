@@ -1,2 +1,3 @@
-# Progetto Elementi di Bioinformatica - Allineamento Golobale con Banda
+# Progetto Elementi di Bioinformatica 
+# Allineamento Golobale con Banda
 
