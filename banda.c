@@ -18,10 +18,10 @@ int main(int argc, char **argv){
 	char* s1, *s2;	//stringhe in input	
 	char* alignment1;	//allineamneto di s1 con s2
 	char* alignment2;	//allineamneto di s2 con s1
-	int l1, l2;	//lunghezze delle stringhe in input
-	int base, extra = 1, band_width;
-	int k;	
-	int i, j, index;	
+	int64_t l1, l2;	//lunghezze delle stringhe in input
+	int64_t base, extra = 1, band_width;
+	int64_t k;	
+	int64_t i, j, index;	
 	int64_t best_alignment_score = 0, upper_bound, score;
 	short first_time = 1;	//variabile che serve per capire se bisogna rilasciare memoria
 							//occupata dalla matrice di programmazione dinamica
@@ -31,11 +31,11 @@ int main(int argc, char **argv){
 	FILE* output_file;
 	
 	//input
-	fscanf(input_file, "%d", &l1);
+	fscanf(input_file, "%ld", &l1);
 	s1 = (char*) malloc(sizeof(char) * (l1 + 1));
 	fscanf(input_file, "%s", s1);
 	
-	fscanf(input_file, "%d", &l2);
+	fscanf(input_file, "%ld", &l2);
 	s2 = (char*) malloc(sizeof(char) * (l2 + 1));
 	fscanf(input_file, "%s", s2);
 	
@@ -48,9 +48,9 @@ int main(int argc, char **argv){
 		char* tmp = s1;
 		s1 = s2;
 		s2 = tmp;
-		int t = l1;
+		int64_t temp = l1;
 		l1 = l2;
-		l2 = t;
+		l2 = temp;
 	}
 	
 	//calcolo valore allineamento nel caso in cui s1 e s2 coincidano
@@ -85,8 +85,8 @@ int main(int argc, char **argv){
 		
 		for(i = 0; i <= l1; i++) {
 			for(j = 0; j < band_width; j++) {
-				int s1_index = i - 1;	//carattere di s1 che si sta analizzando
-				int s2_index = j + i - k - 1;	//carattere di s2 che si sta analizzando
+				int64_t s1_index = i - 1;	//carattere di s1 che si sta analizzando
+				int64_t s2_index = j + i - k - 1;	//carattere di s2 che si sta analizzando
 					
 				//condizione al contorno (left)
 				if(s1_index == -1 && s2_index >= 0 && s2_index < l2) {
@@ -118,7 +118,7 @@ int main(int argc, char **argv){
 			}
 		}
 		score = M[l1][l2 - l1 + k];	//valore calcolato dell'allineamento
-		upper_bound = best_alignment_score - (4 * (k + 1));	
+		upper_bound = best_alignment_score - (4 * (k + 1));
 		extra *= 2;	
 		band_width = base + 2 * extra;
 		
